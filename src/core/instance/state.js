@@ -44,23 +44,28 @@ export function proxy (target: Object, sourceKey: string, key: string) {
   }
   Object.defineProperty(target, key, sharedPropertyDefinition)
 }
-
+// 传入的是 vm 实例
 export function initState (vm: Component) {
   vm._watchers = []
   const opts = vm.$options
+  // 初始化 props
   if (opts.props) initProps(vm, opts.props)
+  // 初始化 methods
   if (opts.methods) initMethods(vm, opts.methods)
+  // 初始化 data
   if (opts.data) {
     initData(vm)
   } else {
     observe(vm._data = {}, true /* asRootData */)
   }
+  // 初始化 computed
   if (opts.computed) initComputed(vm, opts.computed)
+  // 初始化 watch
   if (opts.watch && opts.watch !== nativeWatch) {
     initWatch(vm, opts.watch)
   }
 }
-
+// 初始化 props 并挂载到 Vue 实例上
 function initProps (vm: Component, propsOptions: Object) {
   const propsData = vm.$options.propsData || {}
   const props = vm._props = {}
@@ -109,6 +114,7 @@ function initProps (vm: Component, propsOptions: Object) {
   toggleObserving(true)
 }
 
+// 初始化  data
 function initData (vm: Component) {
   let data = vm.$options.data
   data = vm._data = typeof data === 'function'
@@ -123,12 +129,14 @@ function initData (vm: Component) {
     )
   }
   // proxy data on instance
+  // 获取 data 中的所有数据
   const keys = Object.keys(data)
   const props = vm.$options.props
   const methods = vm.$options.methods
   let i = keys.length
   while (i--) {
     const key = keys[i]
+     // 判断 data 中的属性 是否和 methods 中的属性重名
     if (process.env.NODE_ENV !== 'production') {
       if (methods && hasOwn(methods, key)) {
         warn(
@@ -137,6 +145,7 @@ function initData (vm: Component) {
         )
       }
     }
+    // 判断 data 中的属性 是否和 props 中的属性重名
     if (props && hasOwn(props, key)) {
       process.env.NODE_ENV !== 'production' && warn(
         `The data property "${key}" is already declared as a prop. ` +
@@ -144,15 +153,18 @@ function initData (vm: Component) {
         vm
       )
     } else if (!isReserved(key)) {
+      //  data 中的成员注入到 Vue 实例上
       proxy(vm, `_data`, key)
     }
   }
   // observe data
+  // 设置响应式
   observe(data, true /* asRootData */)
 }
 
 export function getData (data: Function, vm: Component): any {
   // #7573 disable dep collection when invoking data getters
+  // 添加观察者
   pushTarget()
   try {
     return data.call(vm, vm)

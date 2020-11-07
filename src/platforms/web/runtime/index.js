@@ -20,6 +20,9 @@ import platformDirectives from './directives/index'
 import platformComponents from './components/index'
 
 // install platform specific utils
+// 判断是否是关键属性(表单元素的input/checked/selected/muted)
+// 如果是这些属性 设置 el.props 属性(属性不设置到标签上)
+
 Vue.config.mustUseProp = mustUseProp
 Vue.config.isReservedTag = isReservedTag
 Vue.config.isReservedAttr = isReservedAttr
@@ -27,8 +30,11 @@ Vue.config.getTagNamespace = getTagNamespace
 Vue.config.isUnknownElement = isUnknownElement
 
 // install platform runtime directives & components
-extend(Vue.options.directives, platformDirectives)
-extend(Vue.options.components, platformComponents)
+// 工具函数: extend 注册了全局的组件和指令
+// 函数参数：extend 将第二个参数拷贝到第一个参数
+// 如下注册的指令和组件是 web 平台特有的
+extend(Vue.options.directives, platformDirectives) // v-modal、 v-show
+extend(Vue.options.components, platformComponents) // transtion  transtionGroup
 
 // install platform patch function
 Vue.prototype.__patch__ = inBrowser ? patch : noop

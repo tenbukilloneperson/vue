@@ -9,6 +9,7 @@ const version = process.env.VERSION || require('../package.json').version
 const weexVersion = process.env.WEEX_VERSION || require('../packages/weex-vue-framework/package.json').version
 const featureFlags = require('./feature-flags')
 
+// 打包之后文件的文件头
 const banner =
   '/*!\n' +
   ` * Vue.js v${version}\n` +
@@ -212,7 +213,7 @@ const builds = {
     external: Object.keys(require('../packages/weex-template-compiler/package.json').dependencies)
   }
 }
-
+// 工具函数：生成配置
 function genConfig (name) {
   const opts = builds[name]
   const config = {
@@ -262,7 +263,8 @@ function genConfig (name) {
 
   return config
 }
-
+// 判断是否存在 TARGET 环境变量
+// 如果存在就通过 genConfig() 生成配置文件
 if (process.env.TARGET) {
   module.exports = genConfig(process.env.TARGET)
 } else {

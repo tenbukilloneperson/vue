@@ -13,6 +13,7 @@ import { extend, mergeOptions, formatComponentName } from '../util/index'
 let uid = 0
 
 export function initMixin (Vue: Class<Component>) {
+  // 给 Vue 实例挂载 _init() 方法
   Vue.prototype._init = function (options?: Object) {
     const vm: Component = this
     // a uid
@@ -20,6 +21,7 @@ export function initMixin (Vue: Class<Component>) {
 
     let startTag, endTag
     /* istanbul ignore if */
+    // 优化相关的代码
     if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
       startTag = `vue-perf-start:${vm._uid}`
       endTag = `vue-perf-end:${vm._uid}`
@@ -27,8 +29,10 @@ export function initMixin (Vue: Class<Component>) {
     }
 
     // a flag to avoid this being observed
+    // 设置 _isVue 避免vm实例被设置为响应式
     vm._isVue = true
     // merge options
+    // 合并 Vue在initGlobalAPI中的 options 和 用户传入的 options
     if (options && options._isComponent) {
       // optimize internal component instantiation
       // since dynamic options merging is pretty slow, and none of the
@@ -49,13 +53,20 @@ export function initMixin (Vue: Class<Component>) {
     }
     // expose real self
     vm._self = vm
+    // 初始化 生命周期相关变量 $children/$parent/$root/$ref 等等
     initLifecycle(vm)
+    // 初始化事件 父组件绑定在当前组件上的事件
     initEvents(vm)
+    // vm 编译成 render 函数
     initRender(vm)
+
+    // 调用 beforeCreate 生命周期函数
     callHook(vm, 'beforeCreate')
     initInjections(vm) // resolve injections before data/props
+    // 初始化了 _props/methods/_data/_c
     initState(vm)
     initProvide(vm) // resolve provide after data/props
+    // 调用 created 生命周期函数
     callHook(vm, 'created')
 
     /* istanbul ignore if */
@@ -64,7 +75,7 @@ export function initMixin (Vue: Class<Component>) {
       mark(endTag)
       measure(`vue ${vm._name} init`, startTag, endTag)
     }
-
+    // 调用 vm 的 $mount 方法挂载实例
     if (vm.$options.el) {
       vm.$mount(vm.$options.el)
     }

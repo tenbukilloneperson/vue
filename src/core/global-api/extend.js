@@ -33,8 +33,10 @@ export function initExtend (Vue: GlobalAPI) {
     const Sub = function VueComponent (options) {
       this._init(options)
     }
+    // 继承自 Vue 构造函数
     Sub.prototype = Object.create(Super.prototype)
     Sub.prototype.constructor = Sub
+    
     Sub.cid = cid++
     Sub.options = mergeOptions(
       Super.options,

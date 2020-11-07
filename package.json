@@ -14,7 +14,8 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "dev": "rollup -w -c scripts/config.js --environment TARGET:web-full-dev",
+    "注释": "/ -w监听文件 / -c指定配置文件 / --environment 指定环境 / --sourcemap 开启源码地图,方便调试/",
+    "dev": "rollup -w -c scripts/config.js --sourcemap --environment TARGET:web-full-dev",
     "dev:cjs": "rollup -w -c scripts/config.js --environment TARGET:web-runtime-cjs-dev",
     "dev:esm": "rollup -w -c scripts/config.js --environment TARGET:web-runtime-esm",
     "dev:test": "karma start test/unit/karma.dev.config.js",
@@ -23,6 +24,7 @@
     "dev:weex": "rollup -w -c scripts/config.js --environment TARGET:weex-framework",
     "dev:weex:factory": "rollup -w -c scripts/config.js --environment TARGET:weex-factory",
     "dev:weex:compiler": "rollup -w -c scripts/config.js --environment TARGET:weex-compiler ",
+    "build的注释": "运行build可生成所有的vue版本",
     "build": "node scripts/build.js",
     "build:ssr": "npm run build -- web-runtime-cjs,web-server-renderer",
     "build:weex": "npm run build -- weex",

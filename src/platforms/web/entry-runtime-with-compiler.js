@@ -14,14 +14,17 @@ const idToTemplate = cached(id => {
   return el && el.innerHTML
 })
 
+// 重写了 Vue实例的 $mount 方法
 const mount = Vue.prototype.$mount
 Vue.prototype.$mount = function (
   el?: string | Element,
+  // 服务端渲染时为 true 否则为false
   hydrating?: boolean
 ): Component {
   el = el && query(el)
 
   /* istanbul ignore if */
+  // 1. 传入的 el 如果是 body 或者 是html 标签。直接返回 Vue实例
   if (el === document.body || el === document.documentElement) {
     process.env.NODE_ENV !== 'production' && warn(
       `Do not mount Vue to <html> or <body> - mount to normal elements instead.`
@@ -31,6 +34,7 @@ Vue.prototype.$mount = function (
 
   const options = this.$options
   // resolve template/el and convert to render function
+  // 2. 如果选项中没有 render函数, 会获取 template 并转为 render函数
   if (!options.render) {
     let template = options.template
     if (template) {
@@ -61,7 +65,7 @@ Vue.prototype.$mount = function (
       if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
         mark('compile')
       }
-
+      //  将模版转换为 render 函数
       const { render, staticRenderFns } = compileToFunctions(template, {
         outputSourceRange: process.env.NODE_ENV !== 'production',
         shouldDecodeNewlines,
@@ -79,6 +83,7 @@ Vue.prototype.$mount = function (
       }
     }
   }
+  // 3. 如果有 render函数就直接调用 mount 方法 去渲染DOM
   return mount.call(this, el, hydrating)
 }
 
